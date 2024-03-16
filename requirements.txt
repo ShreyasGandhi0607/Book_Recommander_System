@@ -1,4 +1,9 @@
 numpy
 pandas
-scikit-learn
 seaborn
+scikit-learn
+catboost
+xgboost
+dill
+flask
+# -e .
