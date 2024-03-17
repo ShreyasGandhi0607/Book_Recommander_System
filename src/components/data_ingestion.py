@@ -45,5 +45,5 @@ class DataIngestion:
 
 if __name__ == "__main__":
     obj = DataIngestion()
-    train_data, test_data = obj.initiate_data_ingestion('notebook/data/encoded_book.csv')
+    train_data, test_data = obj.initiate_data_ingestion('notebook/data/final_books.csv')
     

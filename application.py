@@ -1,68 +1,107 @@
-from flask import Flask, render_template, request
-
-from src.utils import recommend_books
-import pandas as pd
-from src.utils import recommend_books
-from src.utils import calculate_cosine_similarity
-from sklearn.metrics.pairwise import cosine_similarity
+from flask import Flask, request, render_template
+from src.components.model_trainer import train_recommendation_model
+from src.utils import load_object
+from src.logger import logging
+import requests
 
 app = Flask(__name__)
 
-import requests
+# Train the recommendation model on application startup
+transformed_data, similarity_matrix = train_recommendation_model('notebook/data/final_books.csv')
+logging.info("Model trained successfully.")
 
-API_KEY = "AIzaSyCQ63CkSTVFecJCyWrTR7Xi3oIAFf0d9ik"  # Replace with your actual API key
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    if request.method == 'POST':
+        book_title = request.form['Title']
+        # Perform book recommendation based on the provided title
+        recommended_books = get_recommended_books(book_title)
+        return render_template('response.html', Title=book_title, books=recommended_books)
+    return render_template('index.html')
 
-def get_book_cover_url(book_title):
-    """
-    Searches for a book by title using the Google Books API and returns the cover image URL.
-
-    Args:
-        book_title (str): The title of the book to search for.
-
-    Returns:
-        str: The cover image URL if found, otherwise None.
-    """
-
-    base_url = "https://www.googleapis.com/books/v1/volumes"
-    params = {
-        "q": book_title,
-        "key": API_KEY,
-        "fields": "items(volumeInfo/imageLinks/thumbnail)"  # Specify desired fields
-    }
-
-    response = requests.get(base_url, params=params)
-
-    if response.status_code == 200:
-        data = response.json()
-        items = data.get("items", [])
-
-        if items:
-            # Assuming the first result is the desired book
-            image_link = items[0]["volumeInfo"].get("imageLinks", {}).get("thumbnail")
-            return image_link
-        else:
-            print(f"Book '{book_title}' not found in Google Books results.")
-            return None
-    else:
-        print(f"Error: {response.status_code}")
-        return None
-
-@app.route("/")
-def home():
-    return render_template("index.html")
-
-@app.route("/recommend", methods=["POST"])
+@app.route('/recommend', methods=['POST'])
 def recommend():
-    Title = request.form["title"]
-    similarity_matrix = calculate_cosine_similarity()
-    new_book = pd.read_csv('notebook/data/final_books.csv')
+    book_title = request.form['Title']
+    # Perform book recommendation based on the provided title
+    recommended_books = get_recommended_books(book_title)
+    return render_template('response.html', Title=book_title, books=recommended_books)
 
-    recommended_books = recommend_books(new_book['Title'])  # Assuming you have a `recommend_books` function
+def get_recommended_books(book_title):
+    # Load transformed data and similarity matrix
+    transformed_data = load_object('artifacts/transformed_data.pkl')
+    similarity_matrix = load_object('artifacts/similarity_matrix.pkl')
+    
+    # Check if the provided book title exists in the dataset
+    if book_title not in transformed_data['Title'].values:
+        return None  # Return None if the book title doesn't exist
+    
+    # Get the index of the provided book title
+    book_index = transformed_data.index[transformed_data['Title'] == book_title].tolist()[0]
+    
+    # Get the corresponding author for the provided book title
+    book_author = transformed_data.iloc[book_index]['Author']
 
-    for book in recommended_books:
-        book["cover_url"] = get_book_cover_url(book["volumeInfo"]["title"])  # Add cover URL
+    # Implement logic to get recommended books based on the provided title
+    recommended_books = recommend_books(book_title, transformed_data, similarity_matrix)
+    
+    # Format the recommendations including author names and cover image URL
+    formatted_recommendations = []
+    for title in recommended_books:
+        # Fetch book information using Google Books API
+        book_info = fetch_book_info_by_title_and_author(title, book_author)
+        if book_info:
+            formatted_recommendations.append(book_info)
+    
+    return formatted_recommendations
 
-    return render_template("recommend.html", books=recommended_books, title=title)
 
-if __name__ == "__main__":
-    app.run(debug=True)
+def fetch_book_info_by_title_and_author(title, author):
+    # Google Books API endpoint URL
+    api_url = "https://www.googleapis.com/books/v1/volumes"
+    
+    # Parameters for the API request
+    params = {
+        'q': f'intitle:{title}+inauthor:{author}',
+        'maxResults': 1  # Limiting to one result for simplicity
+    }
+    
+    # Make a GET request to the Google Books API
+    response = requests.get(api_url, params=params)
+    
+    # Check if the request was successful (status code 200)
+    if response.status_code == 200:
+        # Parse the JSON response
+        data = response.json()
+        # Check if any items were returned
+        if 'items' in data and len(data['items']) > 0:
+            # Extract relevant book information
+            book_info = data['items'][0]
+            return {
+                'title': title,
+                'authors': [author],
+                'cover_url': book_info['volumeInfo'].get('imageLinks', {}).get('thumbnail', None)
+            }
+    # If the request fails or no items are found, return None
+    return None
+
+
+# Example function for book recommendation
+import numpy as np
+
+def recommend_books(book_title, transformed_data, similarity_matrix, top_n=6):
+    # Find the index of the provided book title
+    book_index = transformed_data.index[transformed_data['Title'] == book_title].tolist()[0]
+
+    # Calculate similarity scores between the provided book and all other books
+    similarity_scores = similarity_matrix[book_index]
+
+    # Sort the similarity scores in descending order and get the indices of the top recommendations
+    top_indices = np.argsort(similarity_scores)[::-1][:top_n]
+
+    # Get the titles of the recommended books
+    recommended_books = transformed_data.iloc[top_indices]['Title'].tolist()
+
+    return recommended_books
+
+if __name__ == '__main__':
+    app.run(port=5001, debug=True)  # Change the port number as needed

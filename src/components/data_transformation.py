@@ -1,39 +1,42 @@
 import pandas as pd
-from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.preprocessing import OneHotEncoder
+from src.logger import logging  # Import logger from logger.py
 
-def transform_data(data):
-    """
-    Performs data transformation on the book data.
+def transform_data(book):
+    # Drop rows with missing titles
+    logging.info("Dropping rows with missing titles")
+    book = book.dropna(subset=['Title'])
 
-    Parameters:
-    data (pd.DataFrame): DataFrame containing the book data.
+    # Tokenize and extract features from titles and authors using TF-IDF
+    logging.info("Tokenizing and extracting features from titles and authors using TF-IDF")
+    title_vectorizer = TfidfVectorizer()
+    title_features = title_vectorizer.fit_transform(book['Title'])
 
-    Returns:
-    pd.DataFrame: Transformed DataFrame ready for recommendation system.
-    """
-    # Drop any rows with missing values
-    data.dropna(inplace=True)
+    author_vectorizer = TfidfVectorizer()
+    author_features = author_vectorizer.fit_transform(book['Author'])
 
-    # Encode categorical variables
-    label_encoder = LabelEncoder()
-    data['Genre'] = label_encoder.fit_transform(data['Genre'])
-    data['SubGenre'] = label_encoder.fit_transform(data['SubGenre'])
-    data['Category'] = label_encoder.fit_transform(data['Category'])
+    # One-hot encode Genre and SubGenre columns
+    logging.info("One-hot encoding Genre and SubGenre columns")
+    genre_dummies = pd.get_dummies(book['Genre'], prefix='Genre')
+    subgenre_dummies = pd.get_dummies(book['SubGenre'], prefix='SubGenre')
 
-    # Standardize numerical features
-    scaler = StandardScaler()
-    numerical_features = ['Height']  # Add more numerical features as needed
-    data[numerical_features] = scaler.fit_transform(data[numerical_features])
+    # Concatenate the original DataFrame with the new features
+    logging.info("Concatenating the original DataFrame with the new features")
+    new_book = pd.concat([book, 
+                        pd.DataFrame(title_features.toarray(), columns=title_vectorizer.get_feature_names_out()),
+                        pd.DataFrame(author_features.toarray(), columns=author_vectorizer.get_feature_names_out()),
+                        genre_dummies, subgenre_dummies], axis=1)
 
-    return data
+    # Drop original categorical columns and other irrelevant columns
+    
+    logging.info("Data transformation completed")
+    return new_book
 
-# Example usage:
+# Example usage
 if __name__ == "__main__":
-    # Load the data into a DataFrame
-    data = pd.read_csv('your_data.csv')  # Replace 'your_data.csv' with your actual data file path
-
-    # Perform data transformation
-    transformed_data = transform_data(data)
-
-    # Display the transformed data
-    print(transformed_data.head())
+    # Load your data
+    book_data = pd.read_csv('notebook/data/final_books.csv')
+    
+    # Transform the data
+    transformed_data = transform_data(book_data)
