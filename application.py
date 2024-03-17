@@ -4,7 +4,7 @@ from src.utils import load_object
 from src.logger import logging
 import requests
 
-app = Flask(__name__)
+application = Flask(__name__)
 
 # Train the recommendation model on application startup
 transformed_data, similarity_matrix = train_recommendation_model('notebook/data/final_books.csv')
@@ -104,4 +104,4 @@ def recommend_books(book_title, transformed_data, similarity_matrix, top_n=6):
     return recommended_books
 
 if __name__ == '__main__':
-    app.run(port=5001, debug=True)  # Change the port number as needed
+    application.run(host="0.0.0.0", port=8000)  # Change the port number as needed
