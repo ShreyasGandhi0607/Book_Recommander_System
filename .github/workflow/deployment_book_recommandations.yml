@@ -8,7 +8,10 @@ name: Build and deploy Python app to Azure Web App - bookrecommandations
 on:
   push:
     branches:
-      - master
+      - deployment
+    paths:
+      - 'requirements.txt'
+      - 'startup.txt'
   workflow_dispatch:
 
 jobs:
