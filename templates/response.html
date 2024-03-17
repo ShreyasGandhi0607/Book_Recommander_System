@@ -1,7 +1,56 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recommended Books</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        li {
+            margin: 10px;
+            text-align: center;
+            max-width: 200px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+        }
+        img {
+            width: 100px;
+            height: 150px;
+            display: block;
+            margin: 0 auto;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        strong {
+            display: block;
+            color: #007bff;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        p {
+            text-align: center;
+            color: #555;
+        }
+    </style>
 </head>
 <body>
     <h1>Recommended Books for "{{ Title }}"</h1>
@@ -10,12 +59,9 @@
         <ul>
             {% for book in books %}
                 <li>
-                    <img src="{{ book.cover_url }}" alt="Book Cover" style="width: 100px; height: 150px;">
+                    <img src="{{ book.cover_url }}" alt="Book Cover">
                     <strong>{{ book.title }}</strong>  
-                    <!-- {% for author in book.authors %}
-                        {{ author }}{% if not loop.last %}, {% endif %}
-                    {% endfor %} -->
-                    <br>
+                    <span>{{ book.author }}</span>
                 </li>
             {% endfor %}
         </ul>
