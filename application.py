@@ -10,7 +10,7 @@ application = Flask(__name__)
 transformed_data, similarity_matrix = train_recommendation_model('notebook/data/final_books.csv')
 logging.info("Model trained successfully.")
 
-@app.route('/', methods=['GET', 'POST'])
+@application.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
         book_title = request.form['Title']
@@ -19,7 +19,7 @@ def index():
         return render_template('response.html', Title=book_title, books=recommended_books)
     return render_template('index.html')
 
-@app.route('/recommend', methods=['POST'])
+@application.route('/recommend', methods=['POST'])
 def recommend():
     book_title = request.form['Title']
     # Perform book recommendation based on the provided title
