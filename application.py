@@ -17,7 +17,12 @@ def index():
         # Perform book recommendation based on the provided title
         recommended_books = get_recommended_books(book_title)
         return render_template('response.html', Title=book_title, books=recommended_books)
-    return render_template('index.html')
+    
+    # Load transformed data to get available book titles
+    transformed_data = load_object('artifacts/transformed_data.pkl')
+    book_titles = transformed_data['Title'].tolist()
+    
+    return render_template('index.html', book_titles=book_titles)
 
 @application.route('/recommend', methods=['POST'])
 def recommend():
@@ -54,7 +59,6 @@ def get_recommended_books(book_title):
     
     return formatted_recommendations
 
-
 def fetch_book_info_by_title_and_author(title, author):
     # Google Books API endpoint URL
     api_url = "https://www.googleapis.com/books/v1/volumes"
@@ -83,7 +87,6 @@ def fetch_book_info_by_title_and_author(title, author):
             }
     # If the request fails or no items are found, return None
     return None
-
 
 # Example function for book recommendation
 import numpy as np

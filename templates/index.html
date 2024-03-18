@@ -35,7 +35,7 @@
             color: #555;
             font-size: 18px;
         }
-        input[type="text"] {
+        select {
             width: calc(100% - 20px);
             padding: 15px;
             margin-bottom: 20px;
@@ -63,8 +63,12 @@
     <div class="container">
         <h1>Book Recommendation</h1>
         <form action="/recommend" method="POST">
-            <label for="Title">Enter a book title:</label>
-            <input type="text" name="Title" id="Title" required>
+            <label for="Title">Select a book title:</label>
+            <select name="Title" id="Title" required>
+                {% for title in book_titles %}
+                <option value="{{ title }}">{{ title }}</option>
+                {% endfor %}
+            </select>
             <br>
             <button type="submit">Recommend Books</button>
         </form>
