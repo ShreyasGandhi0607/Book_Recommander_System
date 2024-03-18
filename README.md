@@ -10,9 +10,9 @@ This is a book recommender system built using Flask and integrated with the Goog
 
 ## Screenshots
 
-### Home Page
-<img width="1440" alt="Screenshot 2024-03-17 at 9 03 18 PM" src="https://github.com/ShreyasGandhi0607/Book_Recommander_System/assets/100945644/ea75e87c-4635-4b1b-a697-86cea9eefdbc">
 
+### Home Page
+<img width="1440" alt="Screenshot 2024-03-18 at 11 03 08 AM" src="https://github.com/ShreyasGandhi0607/Book_Recommander_System/assets/100945644/90760bd4-8961-4daa-b9e8-d90ba7ff8102">
 
 ### Recommandation Page
 <img width="1440" alt="book_recommandations_ui" src="https://github.com/ShreyasGandhi0607/Book_Recommander_System/assets/100945644/b892123a-8dea-4f8d-8dff-9d373d08cf28">
