@@ -48,7 +48,7 @@ This is a book recommender system built using Flask and integrated with the Goog
     python app.py
     ```
 
-2. Open your web browser and navigate to `http://localhost:5001` to access the web interface.
+2. Open your web browser and navigate to `http://localhost:8000` to access the web interface.
 
 3. Enter a book title in the provided input field and click on "Recommend Books" to view recommended books.
 
