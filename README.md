@@ -1,67 +1,95 @@
-# Book Recommender System
+# Book Recommendation System
 
-This is a book recommender system built using Flask and integrated with the Google Books API to provide book recommendations based on a provided book title.
+A Flask-based web application that recommends books to users based on their input. The application uses a pre-trained machine learning model to suggest similar books.
 
 ## Features
 
-- **Recommendation Generation:** Given a book title, the system recommends similar books based on a trained recommendation model.
-- **Integration with Google Books API:** Fetches book information including author names and cover images from the Google Books API.
-- **User-Friendly Interface:** Provides a simple web interface for users to input book titles and view recommended books.
-
-## Screenshots
-
-### Home Page
-<img width="1440" alt="Screenshot 2024-03-17 at 9 03 18 PM" src="https://github.com/ShreyasGandhi0607/Book_Recommander_System/assets/100945644/ea75e87c-4635-4b1b-a697-86cea9eefdbc">
-
-
-### Recommandation Page
-<img width="1440" alt="book_recommandations_ui" src="https://github.com/ShreyasGandhi0607/Book_Recommander_System/assets/100945644/b892123a-8dea-4f8d-8dff-9d373d08cf28">
-
+- **Home Page**: Displays the most popular books with details such as title, author, rating, and number of votes.
+- **Recommendation Page**: Allows users to enter a book name and get a list of similar books based on a pre-trained similarity model.
+- **Interactive UI**: Responsive design using Bootstrap for a clean and user-friendly interface.
 
 ## Installation
 
-1. Clone the repository:
+### Prerequisites
 
-    ```bash
-    git clone https://github.com/ShreyasGandhi0607/Book_Recommander_System.git
-    ```
+- Python 3.7 or higher
+- `pip` for installing Python packages
 
-2. Navigate to the project directory:
+### Step-by-Step Setup
 
-    ```bash
-    cd book-recommender-system
-    ```
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/ShreyasGandhi0607/book-recommendation-system.git
+   cd book-recommendation-system
+   ```
 
-3. Install dependencies:
+2. **Create a Virtual Environment**:
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
 
-    ```bash
-    pip install -r requirements.txt
-    ```
+3. **Install Required Packages**:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-## Usage
+4. **Download the Model Files**:
+   - Ensure the following files are present in the `notebook/` directory:
+     - `popular.pkl`
+     - `pt.pkl`
+     - `books.pkl`
+     - `similarity_score.pkl`
+   - These files should be generated during the model training process or can be downloaded if provided.
 
-1. Start the Flask application:
+5. **Run the Flask Application**:
+   ```bash
+   flask run
+   ```
 
-    ```bash
-    python app.py
-    ```
-
-2. Open your web browser and navigate to `http://localhost:5001` to access the web interface.
-
-3. Enter a book title in the provided input field and click on "Recommend Books" to view recommended books.
+6. **Access the Application**:
+   - Open your browser and go to `http://127.0.0.1:5000/` to access the home page.
 
 ## Project Structure
 
-- `app.py`: Flask application script containing routes and main logic.
-- `src/`: Directory containing project source code.
-  - `components/`: Directory containing components such as the model trainer.
-  - `utils/`: Directory containing utility functions.
-  - `logger.py`: Logger configuration script.
-- `notebook/`: Directory containing notebooks for data exploration and model training.
-- `templates/`: Directory containing HTML templates for the web interface.
-- `artifacts/`: Directory containing trained model and data transformation artifacts.
+```plaintext
+├── app.py                   # Main Flask application
+├── notebook/                # Directory containing model files
+│   ├── popular.pkl          # Pre-trained model for popular books
+│   ├── pt.pkl               # Pivot table of book ratings
+│   ├── books.pkl            # Book metadata
+│   ├── similarity_score.pkl # Similarity scores between books
+│   ├──recommender_system.ipynb # notebook 
+├── templates/               # HTML templates for Flask
+│   ├── index.html           # Home page template
+│   ├── recommand.html       # Recommendation page template
+├── requirements.txt         # Python dependencies
+└── README.md                # Project documentation
+```
+
+## How It Works
+
+1. **Data Preprocessing**:
+   - The data is preprocessed and saved as pickle files (`popular.pkl`, `pt.pkl`, `books.pkl`, `similarity_score.pkl`) for efficient loading and querying.
+
+2. **Recommendation Logic**:
+   - Users enter a book name, and the app looks up the most similar books using the pre-trained similarity score matrix.
+   - The system then retrieves the details of the recommended books and displays them on the recommendation page.
+
+3. **User Interface**:
+   - The application uses Bootstrap for a clean and responsive user interface.
+   - Flash messages are implemented to guide users (e.g., if no book name is entered).
+
+## Technologies Used
+
+- **Backend**: Python, Flask
+- **Frontend**: HTML, CSS (Bootstrap)
+- **Data Storage**: Pickle files for model and data persistence
+- **Deployment**: Local server (for development)
 
 
-## License
 
-This project is licensed under the [MIT License](LICENSE).
+## Acknowledgements
+
+- **Dataset**: The book data is sourced from the Book Recommendation Dataset on Kaggle.
+- **Inspiration**: This project is inspired by various book recommendation systems available online.
