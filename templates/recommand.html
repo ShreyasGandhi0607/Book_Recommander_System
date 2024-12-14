@@ -2,162 +2,279 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Book Recommender Navbar</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookSync - Your Recommendations</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
-        .navbar {
-            background-color: #212121;
-            padding: 1rem 1rem;
-        }
-
-        .navbar-brand, .nav-link {
-            color: white !important;
-            transition: color 0.3s ease;
-            text-transform: uppercase;
-        }
-
-        .navbar-brand {
-            font-weight: bold;
-            font-size: 1.5rem;
-            margin-right: 2rem;
-        }
-
-        .nav-link {
-            font-size: 1rem;
-            padding: 0.5rem 1rem !important;
-        }
-
-        .nav-link:hover {
-            color: #ff4081 !important;
-            background-color: transparent;
-        }
-
-        .navbar-nav {
-            flex-direction: row;
-        }
-
-        .nav-item:not(:last-child) {
-            margin-right: 1rem;
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --bg-light: #f4f6f7;
+            --text-dark: #2c3e50;
         }
 
         body {
-            background-color: #f4f4f4;
-            color: #212121;
-            font-family: Arial, sans-serif;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
         }
 
-        h1 {
-            color: #000;
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand,
+        .nav-link {
+            color: white !important;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-brand:hover,
+        .nav-link:hover {
+            transform: scale(1.05);
+        }
+
+        .recommendation-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
             text-align: center;
+            padding: 50px 0;
             margin-bottom: 30px;
-            font-weight: bold;
         }
 
-        .card-body {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            height: 400px; /* Fixed height for uniformity */
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+        .book-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+            cursor: pointer;
         }
 
-        .card-img-top {
-            max-height: 200px;
+        .book-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .book-card img {
+            height: 350px;
             object-fit: cover;
-            border-radius: 8px;
+            transition: transform 0.3s ease;
         }
 
-        h3 {
-            margin-top: 15px;
-            font-size: 1.25rem;
+        .book-summary {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        #bookSearch {
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: 50px;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+        }
+
+        #suggestions {
+            position: absolute;
+            width: 100%;
+            max-height: 300px;
+            overflow-y: auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            margin-top: 10px;
+        }
+
+        #suggestions li {
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #suggestions li:hover {
+            background-color: var(--bg-light);
+        }
+
+        .recommend-btn {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
             font-weight: bold;
-            color: #333;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
         }
 
-        h4 {
-            font-size: 1rem;
-            color: #666;
+        .recommend-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            background: var(--secondary-color);
         }
 
-        p {
-            margin-bottom: 10px;
-            color: #666;
+        .recommend-btn span {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            top: 0;
+            left: -100%;
+            transform: skewX(-45deg);
+            transition: 0.5s;
         }
 
-        .col-3 {
-            margin-bottom: 30px;
-        }
-
-        .form-control-lg {
-            border-radius: 8px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-warning {
-            border-radius: 8px;
-            font-weight: bold;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        .recommend-btn:hover span {
+            left: 100%;
         }
     </style>
 </head>
 
 <body>
-    <nav class="navbar">
-        <div class="container-fluid d-flex justify-content-between align-items-center">
-            <a class="navbar-brand" href="#"><i class="fas fa-book-reader me-2"></i>My Book Recommender</a>
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="/"><i class="fas fa-home me-1"></i>Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/recommand"><i class="fas fa-thumbs-up me-1"></i>Recommend</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/"><i class="fas fa-envelope me-1"></i>Contact</a>
-                </li>
-            </ul>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-book-reader me-2"></i>BookSync
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"><i class="fas fa-home me-2"></i>Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/recommand"><i class="fas fa-magic me-2"></i>Recommendations</a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 
-    <div class="container">
-        <h1>Recommend Books</h1>
-        <!-- Displaying Flash Messages -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                    <div class="alert alert-warning">
-                        {% for category, message in messages %}
-                            <p>{{ message }}</p>
-                        {% endfor %}
-                    </div>
-            {% endif %}
-        {% endwith %}
-        <form action="/recommand_books" method="post">
-            <input type="text" name="user_input" class="form-control form-control-lg"><br>
-            <input type="submit" class="btn btn-lg btn-warning">
+    <!-- Recommendation Section -->
+    <div class="container mt-5">
+        <form action="/recommand_books" method="POST" class="search-container mb-4" id="recommand_books">
+            <input type="text" id="bookSearch" name="user_input" placeholder="Enter a book you loved..."
+                autocomplete="on">
+            <ul id="suggestions"></ul>
         </form>
-        <br>
+
+        <div class="text-center mb-5">
+            <button type="submit" form="recommand_books" class="recommend-btn">
+                <span></span> Recommend Books
+            </button>
+        </div>
 
         {% if data %}
-            <div class="row">
-                {% for i in data %}
-                <div class="col-3">
+        <div class="recommendation-header">
+            <h4>Recommendations Based on "{{ Title }}"</h4>
+            <p>Books that share similar magic and spirit</p>
+        </div>
+        <div class="row">
+            {% for book in data %}
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="{{ book[2] }}" alt="{{ book[0] }}" class="card-img-top">
                     <div class="card-body">
-                        <img src="{{ i[2] }}" class="card-img-top" alt="">
-                        <h3>{{ i[0] }}</h3>
-                        <h4>{{ i[1] }}</h4>
+                        <h5>{{ book[0] }}</h5>
+                        <p>{{ book[1] }}</p>
                     </div>
                 </div>
-                {% endfor %}
             </div>
+            {% endfor %}
+        </div>
         {% endif %}
+
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('bookSearch');
+            const suggestionsList = document.getElementById('suggestions');
+            const bookCards = document.querySelectorAll('.book-card');
+            const bookSummarySection = document.getElementById('bookSummarySection');
+            const selectedBookTitle = document.getElementById('selectedBookTitle');
+            const selectedBookSummary = document.getElementById('selectedBookSummary');
+
+            // Suggestions autocomplete
+            searchInput.addEventListener('input', () => {
+                const query = searchInput.value.trim();
+
+                if (query.length > 0) {
+                    fetch(`/suggest_books?query=${query}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            suggestionsList.innerHTML = "";
+                            data.suggestions.forEach(suggestion => {
+                                const li = document.createElement('li');
+                                li.textContent = suggestion;
+                                li.onclick = () => {
+                                    searchInput.value = suggestion;
+                                    suggestionsList.innerHTML = "";
+                                };
+                                suggestionsList.appendChild(li);
+                            });
+                        });
+                } else {
+                    suggestionsList.innerHTML = "";
+                }
+            });
+
+            // Book card click to show summary
+            bookCards.forEach(card => {
+                card.addEventListener('click', function () {
+                    const bookTitle = this.dataset.bookTitle;
+
+                    fetch('/get_book_summary', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `book_title=${encodeURIComponent(bookTitle)}`
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            selectedBookTitle.textContent = bookTitle;
+                            selectedBookSummary.textContent = data.summary;
+                            bookSummarySection.style.display = 'block';
+
+                            // Scroll to summary section
+                            bookSummarySection.scrollIntoView({ behavior: 'smooth' });
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            selectedBookSummary.textContent = 'Unable to fetch summary.';
+                            bookSummarySection.style.display = 'block';
+                        });
+                });
+            });
+
+            // Hide suggestions when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!searchInput.contains(e.target)) {
+                    suggestionsList.innerHTML = "";
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

@@ -3,70 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recommended Books</title>
+    <title>BookSync - Your Recommendations</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f7f7f7;
-            padding: 20px;
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --bg-light: #f4f6f7;
+            --text-dark: #2c3e50;
         }
-        h1 {
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        .recommendation-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
             text-align: center;
-            color: #333;
+            padding: 50px 0;
             margin-bottom: 30px;
         }
-        ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+
+        .book-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            height: 100%;
         }
-        li {
-            margin: 10px;
+
+        .book-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .book-card img {
+            height: 350px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .book-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .book-card-body {
+            padding: 20px;
             text-align: center;
-            max-width: 200px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            padding: 10px;
+            background: white;
         }
-        img {
-            width: 100px;
-            height: 150px;
-            display: block;
-            margin: 0 auto;
-            border-radius: 5px;
+
+        .book-title {
+            font-weight: 700;
+            color: var(--text-dark);
             margin-bottom: 10px;
         }
-        strong {
-            display: block;
-            color: #007bff;
-            font-size: 16px;
-            margin-bottom: 5px;
-        }
-        p {
-            text-align: center;
-            color: #555;
+
+        .book-author {
+            color: var(--primary-color);
+            font-style: italic;
         }
     </style>
 </head>
 <body>
-    <h1>Recommended Books for "{{ Title }}"</h1>
+    <div class="recommendation-header">
+        <div class="container">
+            <h1>Recommendations for "{{ Title }}"</h1>
+            <p class="lead">Books that share similar magic and spirit</p>
+        </div>
+    </div>
 
-    {% if books %}
-        <ul>
+    <div class="container">
+        {% if books %}
+        <div class="row g-4">
             {% for book in books %}
-                <li>
-                    <img src="{{ book.cover_url }}" alt="Book Cover">
-                    <strong>{{ book.title }}</strong>  
-                    <span>{{ book.author }}</span>
-                </li>
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="card book-card h-100">
+                    <img src="{{ book.cover_url }}" class="card-img-top" alt="{{ book.title }}">
+                    <div class="book-card-body">
+                        <h5 class="book-title">{{ book.title }}</h5>
+                        <p class="book-author">{{ book.author }}</p>
+                    </div>
+                </div>
+            </div>
             {% endfor %}
-        </ul>
-    {% else %}
-        <p>No recommendations found.</p>
-    {% endif %}
+        </div>
+        {% else %}
+        <div class="text-center">
+            <p class="lead">No recommendations found. Maybe try another book?</p>
+        </div>
+        {% endif %}
+    </div>
 </body>
 </html>
